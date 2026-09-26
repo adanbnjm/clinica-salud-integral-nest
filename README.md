@@ -1,114 +1,152 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+CLINICA DE SALUD INTEGRAL
+api rest para la gestion de una clinica de salud integral migrada a nestjs, typescript, prisma y postgresql
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+el proyecto incluye autenticacion mediante jwt autorizacion por roles,validacion de datos,documentacion con swagger,manejo de errores de prisma y el logging de las peticiones http
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+tecnologias utilizadas
 
-## Description
+- nestjs
+- typescript
+- prisma orm
+- postgresql
+- jwt
+- bcryptjs
+- class-validator
+- class-transformer
+- swagger
+- joi pnpm
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+requisitos
+antes de ejecutar este proyecto se necesita tener instalado
 
-## Project setup
+- nodejs
+- - pnpm
+- postgresql
 
-```bash
-$ pnpm install
-```
+instalacion
+clonar el repositorio e instalar las dependencias
 
-## Compile and run the project
+pnpm install
 
-```bash
-# development
-$ pnpm run start
+variables de entorno
+crear un arcivo .env en la raiz del proyecto
+por ejemplo
 
-# watch mode
-$ pnpm run start:dev
+DATABASE_URL="postgresql://usuario:password@localhost:5432/clinica_salud_integral?schema=public"
+JWT_SECRET="tu_secreto_jwt_de_al_menos_10_caracteres"
+PORT=3000
 
-# production mode
-$ pnpm run start:prod
-```
+tambien esta el .env.example con valores de ejemplo
+el .env tiene archivos reales y ese no se sube al repositorio
 
-## Run tests
+ejecutar el proyecto
 
-```bash
-# unit tests
-$ pnpm run test
+pnpm start:dev
 
-# e2e tests
-$ pnpm run test:e2e
+swagger
+la documentacion de la api esta en
+http://localhost:3000/api/docs
+desde swagger se pueden consultar y probar los diferentes endpoints de la api.
 
-# test coverage
-$ pnpm run test:cov
-```
+autenticacion
+la api utiliza jwt para proteger los endpoints que requieren autenticacion
 
-## Deployment
+los roles que tenemos son
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- RECEPCIONISTA
+- MEDICO
+- GERENCIA
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+guards
+los guards se encargan de aprobar la autenticacion y autorizacion antes de permitir acceso a un endpoint protegido
+jwtauthguard verifica que el token jwt sea valido
+rolesguard comprueba el rol del usuario cuando el endpoint tiene permisos definidos mediante roles
+Se realizó una petición utilizando un pacienteId que no existe:
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+pruebas realizadas
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- paciente inexistente
+  {
+  "pacienteId": 999,
+  "medicoId": 1,
+  "fechaHora": "2026-09-26T14:00:00.000Z",
+  "estado": "PROGRAMADA"
+  }
 
-## Observability
+Resultado:
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+404 Not Found
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+Respuesta:
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+{
+"message": "El paciente no existe",
+"error": "Not Found",
+"statusCode": 404
+}
 
-## Resources
+esto demuestra que citasservice valida la existencia del paciente antes de crear la cita
 
-Check out a few resources that may come in handy when working with NestJS:
+- creacion de una cita
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+se realizo usando datos existentes
 
-## Support
+{
+"pacienteId": 1,
+"medicoId": 1,
+"fechaHora": "2026-09-26T14:00:00.000Z",
+"estado": "PROGRAMADA"
+}
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Resultado:
 
-## Stay in touch
+201 Created
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Respuesta obtenida:
 
-## License
+{
+"id": 7,
+"fechaHora": "2026-09-26T14:00:00.000Z",
+"creadaEn": "2026-09-26T00:19:20.476Z",
+"estado": "PROGRAMADA",
+"pacienteId": 1,
+"medicoId": 1
+}
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+ademas el loggin interceptor registro la peticion
+
+[Nest] LOG [HTTP] POST /citas - 72ms
+
+modulos principales
+
+auth es responsable de
+registrar usuarios
+el inicio de sesion
+la generacion de tokens jwt
+validacion de las credenciales
+
+pacientes
+responsable de la gestion de pacientes
+medicos
+responsable de la gestion de medicos y sus especialidades
+citas
+responsable de la creacion y consultas de citas medicas
+prisma
+es el centro de la conexion y acceso a la base de datos postgresql
+
+scrips principales
+
+pnpm start
+pnpm start:dev
+pnpm test
+pnpm test:e2e
+
+estado del cierre de esta semana
+la aplicacion inicia correctamente
+varables de entorno configuradas y validadas
+autenticacion mediante jwt
+autorizacion mediante guard y roles
+logginginterceptor de manrea global
+manejo de los pacientes inexistentes
+creacion correcta de una cita
+documentacion de los endpoints con swagger
