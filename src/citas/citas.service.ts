@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PacientesService } from '../pacientes/pacientes.service';
+import type { EstadoCita } from '../../generated/prisma/client';
 
 @Injectable()
 export class CitasService {
@@ -33,5 +34,20 @@ export class CitasService {
 
   async findAll() {
     return this.prisma.cita.findMany();
+  }
+
+  async actualizarEstado(id: number, estado: EstadoCita) {
+    const cita = await this.prisma.cita.findUnique({
+      where: { id },
+    });
+
+    if (!cita) {
+      throw new NotFoundException('Cita no encontrada');
+    }
+
+    return this.prisma.cita.update({
+      where: { id },
+      data: { estado },
+    });
   }
 }
