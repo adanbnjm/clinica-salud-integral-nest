@@ -10,6 +10,9 @@ import { LoggingInterceptor } from './common/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:5173',
+  });
 
   const configService = app.get(ConfigService);
 
@@ -25,8 +28,8 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('ClÃnica Salud Integral')
-    .setDescription('API de la clÃnica, migrada a NestJS')
+    .setTitle('Clinica Salud Integral')
+    .setDescription('API de la clinica, migrada a NestJS')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
