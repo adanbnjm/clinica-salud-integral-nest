@@ -8,6 +8,7 @@ import { PacientesModule } from './pacientes/pacientes.module';
 import { MedicosModule } from './medicos/medicos.module';
 import { AuthModule } from './auth/auth.module';
 import { CitasModule } from './citas/citas.module';
+import { ReportesModule } from './reportes/reportes.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CitasModule } from './citas/citas.module';
     MedicosModule,
     AuthModule,
     CitasModule,
+    ReportesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

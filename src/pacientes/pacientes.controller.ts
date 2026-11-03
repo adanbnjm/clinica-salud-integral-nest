@@ -1,12 +1,15 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -26,9 +29,13 @@ export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista todos los pacientes' })
-  obtenerPacientes() {
-    return this.pacientesService.obtenerPacientes();
+  @ApiOperation({ summary: 'Lista pacientes con búsqueda y paginación' })
+  obtenerPacientes(
+    @Query('query') query?: string,
+    @Query('pagina', new DefaultValuePipe(1), ParseIntPipe) pagina = 1,
+    @Query('limite', new DefaultValuePipe(10), ParseIntPipe) limite = 10,
+  ) {
+    return this.pacientesService.obtenerPacientes(query, pagina, limite);
   }
 
   @Get(':id')
