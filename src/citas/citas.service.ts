@@ -36,6 +36,28 @@ export class CitasService {
     return this.prisma.cita.findMany();
   }
 
+  async findPaginadas(pagina: number, porPagina: number, estado?: EstadoCita) {
+    const where = estado ? { estado } : {};
+
+    const [citas, total] = await Promise.all([
+      this.prisma.cita.findMany({
+        where,
+        skip: (pagina - 1) * porPagina,
+        take: porPagina,
+        orderBy: {
+          id: 'desc',
+        },
+      }),
+      this.prisma.cita.count({ where }),
+    ]);
+
+    return {
+      data: citas,
+      total,
+      pagina,
+      totalPaginas: Math.ceil(total / porPagina),
+    };
+  }
   async actualizarEstado(id: number, estado: EstadoCita) {
     const cita = await this.prisma.cita.findUnique({
       where: { id },
