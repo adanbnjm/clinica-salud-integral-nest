@@ -10,11 +10,15 @@ import { LoggingInterceptor } from './common/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin: 'http://localhost:5173',
-  });
 
   const configService = app.get(ConfigService);
+  const frontendUrl = configService.get<string>('FRONTEND_URL');
+
+  app.enableCors({
+    origin: frontendUrl
+      ? ['http://localhost:5173', frontendUrl]
+      : 'http://localhost:5173',
+  });
 
   app.useGlobalInterceptors(new LoggingInterceptor());
 

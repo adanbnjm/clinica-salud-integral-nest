@@ -18,6 +18,7 @@ import { ReportesModule } from './reportes/reportes.module';
         DATABASE_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().min(10).required(),
         PORT: Joi.number().default(3000),
+        FRONTEND_URL: Joi.string().uri().optional(),
       }),
     }),
     PrismaModule,
